@@ -8,12 +8,14 @@ public class Task_4 {
 
         int n;
         List<Set<Integer>> connections;
+        LinkedList<Integer> sortQueue;
 
         Graph(int n) {
             this.n = n;
             this.connections = new ArrayList();
             for (int i = 0; i < n; i++)
                 connections.add(new HashSet<>());
+            this.sortQueue = new LinkedList<>();
         }
 
         void addEdge(int vertex, int neighbor) {
@@ -21,28 +23,27 @@ public class Task_4 {
         }
 
 
-        void DFS() {
+        void topologicalSort() {
             boolean[] visited = new boolean[this.n];
-            List<Integer> path = new ArrayList<>();
 
-            DFSUtil(0, visited);
-            for (boolean v : visited) {
-                if (!v) {
-                    System.out.println("NO");
-                    return;
+            for (int v = 0; v < this.n; v++) {
+                if (!visited[v]) {
+                    DFS(v, visited);
                 }
             }
-            System.out.println("YES");
+
+            sortQueue.forEach(v -> System.out.print(v + " "));
         }
 
-        void DFSUtil(int v, boolean[] visited) {
-            if (visited[v]) {
-                return;
-            }
+        void DFS(int v, boolean[] visited) {
+            visited[v] = true;
 
-            this.connections.get(v).stream()
-                    .filter(vertex -> !visited[vertex])
-                    .forEach(vertex -> DFSUtil(vertex, visited));
+            for (int u : this.connections.get(v)) {
+                if (!visited[u]) {
+                    DFS(u, visited);
+                }
+            }
+            this.sortQueue.addFirst(v + 1);
         }
     }
 
@@ -63,6 +64,14 @@ public class Task_4 {
             System.out.println(v + ": " + g.connections.get(v));
         }
 
-//        g.DFS();
+        g.topologicalSort();
     }
 }
+
+//6 6
+//1 2
+//3 2
+//4 2
+//2 5
+//6 5
+//4 6
