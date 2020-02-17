@@ -12,7 +12,7 @@ import java.util.Scanner;
 //      Формат выходных данных
 //        Выведите в выходной файл список ребер заданного графа. Ребра можно выводить в произвольном порядке.
 
-public class Task_1 {
+public class Task_A {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
 

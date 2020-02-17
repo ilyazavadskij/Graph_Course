@@ -1,22 +1,20 @@
 package DFS_BFS;
 
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-public class Task_5 {
+public class Task_D {
 
     static class Graph {
 
         int n;
         List<Set<Integer>> connections;
+        LinkedList<Integer> sortQueue;
 
         LinkedList<Integer> path;
         boolean isCircled;
-        int circleStart;
 
         Graph(int n) {
             this.n = n;
@@ -24,6 +22,7 @@ public class Task_5 {
             for (int i = 0; i < n; i++)
                 connections.add(new HashSet<>());
             this.path = new LinkedList<>();
+            this.sortQueue = new LinkedList<>();
             this.isCircled = false;
         }
 
@@ -31,59 +30,70 @@ public class Task_5 {
             this.connections.get(vertex).add(neighbor);
         }
 
-
         void findCircle() {
             int[] color = new int[this.n];
-            circleStart = -1;
 
             for (int v = 0; v < this.n; v++) {
                 if (!this.isCircled) {
                     if (color[v] == 0) {
-                        DFS(v, color);
-                    }
-                }
-            }
-            System.out.println(path);
-            if (!this.isCircled) {
-                System.out.println("NO");
-            } else {
-                System.out.println("YES");
-//                System.out.println(" " + circleStart);
-                boolean start = false;
-                for (int v : path) {
-                    if (v == circleStart) {
-                        start = true;
-                    }
-//                    System.out.println(v + " " + start);
-                    if (start) {
-                        System.out.printf("%d ", v + 1);
+                        findCircleDFS(v, color);
                     }
                 }
             }
         }
 
-        void DFS(int v, int[] color) {
+        void findCircleDFS(int v, int[] color) {
             if (this.isCircled) {
                 return;
             }
 
             path.add(v);
             color[v] = 1;
-            for (int u : this.connections.get(v)) {
-                if (color[u] == 0) {
-                    DFS(u, color);
-                }
 
-                if (color[u] == 1) {
-                    if (this.circleStart == -1) {
-                        this.circleStart = u;
+            if (this.connections.get(v) != null) {
+                for (int u : this.connections.get(v)) {
+                    if (color[u] == 0) {
+                        findCircleDFS(u, color);
                     }
-                    this.isCircled = true;
-                    return;
+                    if (color[u] == 1) {
+                        this.isCircled = true;
+                        return;
+                    }
                 }
             }
+
             path.removeLast();
             color[v] = 2;
+        }
+
+        void topologicalSort() {
+            findCircle();
+
+            if (this.isCircled) {
+                System.out.println("-1");
+                return;
+            }
+
+            boolean[] visited = new boolean[this.n];
+
+            for (int v = 0; v < this.n; v++) {
+                if (!visited[v]) {
+                    DFS(v, visited);
+                }
+            }
+
+            sortQueue.forEach(v -> System.out.print(v + " "));
+        }
+
+        void DFS(int v, boolean[] visited) {
+            visited[v] = true;
+
+            for (int u : this.connections.get(v)) {
+                if (!visited[u]) {
+                    DFS(u, visited);
+                }
+            }
+            this.sortQueue.addFirst(v + 1);
         }
     }
 
@@ -92,8 +102,6 @@ public class Task_5 {
         String temp[] = br.readLine().split(" ");
         int n = Integer.parseInt(temp[0]);
         int m = Integer.parseInt(temp[1]);
-
-//        System.out.println(n + " " + m);
 
         Graph g = new Graph(n);
 
@@ -108,6 +116,14 @@ public class Task_5 {
 //            System.out.println(v + ": " + g.connections.get(v));
 //        }
 
-        g.findCircle();
+        g.topologicalSort();
     }
 }
+
+//6 6
+//1 2
+//3 2
+//4 2
+//2 5
+//6 5
+//4 6

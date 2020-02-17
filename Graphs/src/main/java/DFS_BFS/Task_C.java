@@ -1,8 +1,11 @@
 package DFS_BFS;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
-public class Task_3 {
+public class Task_C {
     static class Graph {
 
         int w;
@@ -84,20 +87,20 @@ public class Task_3 {
         }
     }
 
-    public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
-        int w = input.nextInt();
-        int h = input.nextInt();
-
-        int startX = input.nextInt() - 1;
-        int startY = input.nextInt() - 1;
-        int finishX = input.nextInt() - 1;
-        int finishY = input.nextInt() - 1;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String temp[] = br.readLine().split(" ");
+        int w = Integer.parseInt(temp[0]);
+        int h = Integer.parseInt(temp[1]);
+        int startX = Integer.parseInt(temp[2]) - 1;
+        int startY = Integer.parseInt(temp[3]) - 1;
+        int finishX = Integer.parseInt(temp[4]) - 1;
+        int finishY = Integer.parseInt(temp[5]) - 1;
 
         Graph g = new Graph(w, h);
         char[][] cells = new char[w][h];
         for (int i = 0; i < h; i++) {
-            cells[i] = input.next().toCharArray();
+            cells[i] = br.readLine().toCharArray();
         }
 
         for (int i = 0; i < w; i++) {
@@ -127,5 +130,5 @@ public class Task_3 {
 //*...
 
 //4 2 4 2 1 1
-//        ....
-//        ....
+//....
+//....

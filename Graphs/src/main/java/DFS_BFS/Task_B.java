@@ -15,7 +15,7 @@ import java.util.*;
 //      Формат выходных данных
 //        Выведите “YES”, если граф является связным, и “NO” в противном случае.
 
-public class Task_2 {
+public class Task_B {
 
     static class Graph {
 
