@@ -11,80 +11,93 @@ public class Task_C {
         int w;
         int h;
         int n;
-        List<Set<Integer>> connections;
+        boolean[][] connections;
+        int[] parent;
+
+        LinkedList<Integer> path;
 
         Graph(int w, int h) {
             this.w = w;
             this.h = h;
             this.n = w * h;
-            this.connections = new ArrayList();
-            for (int i = 0; i < n; i++)
-                connections.add(new HashSet<>());
+            this.connections = new boolean[w][h];
+
+            this.parent = new int[n];
+            Arrays.fill(this.parent, -1);
+
+            this.path = new LinkedList<>();
         }
 
-        void addEdge(int vertex, int neighbor) {
-            this.connections.get(vertex).add(neighbor);
+
+        void addLine(int i, char[] line) {
+            for (int j = 0; j < this.w; j++) {
+                connections[j][i] = line[j] == '.';
+            }
         }
 
         void findPath(int start, int finish) {
-            LinkedList<Integer> visited = new LinkedList<>();
-            findPathUtil(start, finish, visited);
-            if (visited.getLast().equals(finish)) {
-                System.out.println("YES");
-                visited.forEach(v -> System.out.print((v % this.w + 1) + " " + (v / this.w + 1) + " "));
-//                System.out.println();
-//                visited.forEach(v -> System.out.print(v + " "));
-            } else {
+            BFS(start, finish);
+
+            System.out.println(Arrays.toString(parent));
+
+            if (this.parent[finish] == -1) {
                 System.out.println("NO");
+            } else {
+                System.out.println("YES");
+                int current = finish;
+                this.path.addFirst(current);
+                while (current != start) {
+                    current = this.parent[current];
+                    this.path.addFirst(current);
+                }
+                path.forEach(v -> System.out.print((v % w + 1) + " " + (v / w + 1) + " "));
             }
         }
 
-        void findPathUtil(int v, int finish, LinkedList<Integer> visited) {
-            visited.add(v);
+        void BFS(int start, int finish) {
+            LinkedList<Integer> queue = new LinkedList<>();
+            boolean[] visited = new boolean[n];
 
-            if (connections.get(v).contains(finish)) {
-                visited.add(finish);
-                return;
-            }
+            visited[start] = true;
+            queue.add(start);
 
-            for (int c : connections.get(v)) {
-                if (!visited.contains(c)) {
-                    findPathUtil(c, finish, visited);
-                    if (visited.getLast() == finish) {
-                        return;
+            while (queue.size() != 0) {
+                int u = queue.poll();
+                int uX = u % this.w;
+                int uY = u / this.w;
+
+                int[] neighbors;
+                if (this.w == 1) {
+                    neighbors = new int[]{u - this.w, u + this.w};
+                } else {
+                    if (uX == 0) {
+                        neighbors = new int[]{u - this.w, u + this.w, u + 1};
+                    } else if (uX == this.w - 1) {
+                        neighbors = new int[]{u - this.w, u + this.w, u - 1};
                     } else {
-                        visited.removeLast();
+                        neighbors = new int[]{u - this.w, u + this.w, u - 1, u + 1};
                     }
                 }
-            }
+                System.out.println("  " + u + ": " + Arrays.toString(neighbors));
 
-        }
-    }
 
-    private static void checkConnections(char[][] cells, int x, int y, Graph g) {
-        if (cells[y][x] == '.') {
-            for (int i = x - 1; i <= x + 1; i++) {
-                if (i < 0 || cells.length == i) {
-                    continue;
-                }
-                if (i != x) {
-                    if (cells[y][i] == '.') {
-                        g.addEdge(y * cells.length + x, y * cells.length + i);
-                    }
-                }
-            }
-
-            for (int j = y - 1; j <= y + 1; j++) {
-                if (j < 0 || cells[x].length == j) {
-                    continue;
-                }
-                if (j != y) {
-                    if (cells[j][x] == '.') {
-                        g.addEdge(y * cells.length + x, j * cells.length + x);
+                for (int c : neighbors) {
+                    if (c >= 0 && c < this.n) {
+                        if (connections[c % this.w][c / this.w]) {
+                            if (!visited[c]) {
+                                this.parent[c] = u;
+                                visited[c] = true;
+                                queue.add(c);
+                                if (c == finish) {
+                                    return;
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
+
     }
 
     public static void main(String[] args) throws IOException {
@@ -98,15 +111,8 @@ public class Task_C {
         int finishY = Integer.parseInt(temp[5]) - 1;
 
         Graph g = new Graph(w, h);
-        char[][] cells = new char[w][h];
         for (int i = 0; i < h; i++) {
-            cells[i] = br.readLine().toCharArray();
-        }
-
-        for (int i = 0; i < w; i++) {
-            for (int j = 0; j < h; j++) {
-                checkConnections(cells, i, j, g);
-            }
+            g.addLine(i, br.readLine().toCharArray());
         }
 
 //        for (int v = 0; v < g.connections.size(); v++) {
@@ -115,6 +121,7 @@ public class Task_C {
 
         g.findPath(startY * w + startX, finishY * w + finishX);
     }
+
 }
 
 //4 2 1 1 4 2
