@@ -25,30 +25,31 @@ public class Task_B {
 
     static class Graph {
         int n;
-        LinkedList<Edge>[] adjacencylist;
+        LinkedList<Edge>[] adjacencyList;
         int[] distance;
 
-        final int MAX_WEIGHT = 100;
+        final int MAX_WEIGHT;
 
         Graph(int n) {
             this.n = n;
+            MAX_WEIGHT = n * 100;
             this.distance = new int[n];
-            adjacencylist = new LinkedList[n];
+            adjacencyList = new LinkedList[n];
             for (int i = 0; i < n; i++) {
-                adjacencylist[i] = new LinkedList<>();
+                adjacencyList[i] = new LinkedList<>();
             }
         }
 
         void addEdge(int source, int destination, int weight) {
             Edge edge = new Edge(source, destination, weight);
-            adjacencylist[source].addFirst(edge);
+            adjacencyList[source].addFirst(edge);
 
             edge = new Edge(destination, source, weight);
-            adjacencylist[destination].addFirst(edge);
+            adjacencyList[destination].addFirst(edge);
         }
 
         void findMinDistance(int s, int t) {
-            boolean[] SPT = new boolean[n];
+            boolean[] visited = new boolean[n];
 
             for (int i = 0; i < n; i++) {
                 distance[i] = MAX_WEIGHT;
@@ -63,23 +64,22 @@ public class Task_B {
                 }
             });
 
-            distance[0] = 0;
-            Pair<Integer, Integer> p0 = new Pair<>(distance[0], 0);
+            distance[s] = 0;
+            Pair<Integer, Integer> p0 = new Pair<>(distance[s], s);
             pq.offer(p0);
-            while (!pq.isEmpty()) {
-                System.out.println(pq);
+            while (!pq.isEmpty() && !visited[t]) {
                 Pair<Integer, Integer> extractedPair = pq.poll();
-                System.out.println("  " + extractedPair);
 
                 int extractedVertex = extractedPair.getValue();
-                if (!SPT[extractedVertex]) {
-                    SPT[extractedVertex] = true;
 
-                    LinkedList<Edge> list = adjacencylist[extractedVertex];
+                if (!visited[extractedVertex]) {
+                    visited[extractedVertex] = true;
+
+                    LinkedList<Edge> list = adjacencyList[extractedVertex];
                     for (Edge edge : list) {
                         int destination = edge.destination;
 
-                        if (!SPT[destination]) {
+                        if (!visited[destination]) {
                             int newKey = distance[extractedVertex] + edge.weight;
                             int currentKey = distance[destination];
                             if (currentKey > newKey) {
@@ -92,7 +92,11 @@ public class Task_B {
                 }
             }
 
-            System.out.println(distance[t]);
+            if (distance[t] != MAX_WEIGHT) {
+                System.out.println(distance[t]);
+            } else {
+                System.out.println(-1);
+            }
         }
     }
 
@@ -120,5 +124,18 @@ public class Task_B {
 
         g.findMinDistance(s, t);
     }
-
 }
+
+
+//5 10
+//3 1
+//4 2 6
+//4 4 74
+//2 3 76
+//4 1 57
+//1 5 58
+//2 1 62
+//1 4 73
+//5 5 66
+//3 4 83
+//3 5 55
