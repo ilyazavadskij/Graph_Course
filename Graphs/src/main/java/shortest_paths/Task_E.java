@@ -3,14 +3,15 @@ package shortest_paths;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.LinkedList;
 
-public class Task_C {
+public class Task_E {
 
-    private static long MAX_VALUE = Long.MAX_VALUE;
+    private static long MAX_VALUE = 100000;
 
     static class Graph {
 
-        long distances[];
+        long[] distances;
         long[][] adjacencyMatrix;
         int n;
 
@@ -26,11 +27,13 @@ public class Task_C {
             this.distances = new long[n];
         }
 
-        void addEdge(int b, int c, long w) {
-            adjacencyMatrix[b][c] = w;
+        void addLine(int i, String[] line) {
+            for (int j = 0; j < this.n; j++) {
+                adjacencyMatrix[j][i] = Integer.parseInt(line[j]);
+            }
         }
 
-        void BellmanFord(int source) {
+        boolean BellmanFord(int source) {
             int[] parent = new int[n];
 
             for (int node = 0; node < n; node++) {
@@ -68,46 +71,46 @@ public class Task_C {
                 }
             }
 
+
             for (int vertex = 0; vertex < n; vertex++) {
-                if (distances[vertex] == MAX_VALUE) {
-                    System.out.println("*");
-                    continue;
-                }
                 if (negativeCircle[vertex]) {
-                    System.out.println("-");
-                    continue;
+                    System.out.println("YES");
+                    printCircle(vertex, parent);
+                    return true;
                 }
-                System.out.println(distances[vertex]);
             }
+            return false;
+        }
+
+        private void printCircle(int start, int[] parent) {
+            LinkedList<Integer> path = new LinkedList<>();
+            int current = start;
+            do {
+                current = parent[current];
+                path.addFirst(current + 1);
+            } while (current != start);
+            System.out.println(path.size());
+            path.forEach(v -> System.out.print(v + " "));
         }
     }
 
-    public static void main(String[] arg) throws IOException {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String[] temp = br.readLine().split(" ");
 
         int n = Integer.parseInt(temp[0]);
-        int m = Integer.parseInt(temp[1]);
-        int s = Integer.parseInt(temp[2]) - 1;
 
         Graph g = new Graph(n);
 
-        for (int i = 0; i < m; i++) {
-            temp = br.readLine().split(" ");
-            int b = Integer.parseInt(temp[0]) - 1;
-            int c = Integer.parseInt(temp[1]) - 1;
-            long w = Long.parseLong(temp[2]);
-            g.addEdge(b, c, w);
+        for (int i = 0; i < n; i++) {
+            g.addLine(i, br.readLine().split(" "));
         }
 
-//        for (int i = 0; i < n; i++) {
-//            for (int j = 0; j < n; j++) {
-//                System.out.print(g.adjacencyMatrix[i][j] + " ");
-//            }
-//            System.out.println();
-//        }
-
-        g.BellmanFord(s);
+        for (int i = 0; i < n; i++) {
+            if (g.BellmanFord(i)) {
+                return;
+            }
+        }
+        System.out.println("NO");
     }
-
 }
