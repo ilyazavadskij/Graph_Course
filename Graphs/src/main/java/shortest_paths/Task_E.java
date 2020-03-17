@@ -11,8 +11,10 @@ public class Task_E {
 
     static class Graph {
 
+        LinkedList<Integer> path;
         long[] distances;
         long[][] adjacencyMatrix;
+        boolean[] visited;
         int n;
 
 
@@ -25,16 +27,37 @@ public class Task_E {
                 }
             }
             this.distances = new long[n];
+            this.visited = new boolean[n];
+            this.path = new LinkedList<>();
         }
 
         void addLine(int i, String[] line) {
             for (int j = 0; j < this.n; j++) {
-                adjacencyMatrix[j][i] = Integer.parseInt(line[j]);
+                adjacencyMatrix[j][i] = Long.parseLong(line[j]);
             }
+        }
+
+        void findNegativeCircle() {
+            for (int j = 0; j < n; j++) {
+                visited[j] = false;
+            }
+
+            for (int i = 0; i < n; i++) {
+                if (!visited[i]) {
+                    if (BellmanFord(i)) {
+                        System.out.println("YES");
+                        System.out.println(path.size());
+                        path.forEach(v -> System.out.print((v + 1) + " "));
+                    }
+                    return;
+                }
+            }
+            System.out.println("NO");
         }
 
         boolean BellmanFord(int source) {
             int[] parent = new int[n];
+            path.clear();
 
             for (int node = 0; node < n; node++) {
                 distances[node] = MAX_VALUE;
@@ -54,7 +77,7 @@ public class Task_E {
                 }
             }
 
-            boolean[] negativeCircle = new boolean[n];
+//            boolean[] negativeCircle = new boolean[n];
             for (int sourceNode = 0; sourceNode < n; sourceNode++) {
                 for (int destinationNode = 0; destinationNode < n; destinationNode++) {
                     if (adjacencyMatrix[sourceNode][destinationNode] != MAX_VALUE) {
@@ -62,55 +85,38 @@ public class Task_E {
                             parent[destinationNode] = sourceNode;
                             int current = destinationNode;
                             do {
-                                negativeCircle[current] = true;
+//                                negativeCircle[current] = true;
                                 current = parent[current];
-//                                System.out.println("  " + current);
-                            } while (current != destinationNode);
+                                path.addFirst(current);
+                            } while (current != destinationNode && current != -1);
+
+                            return current != -1;
                         }
                     }
                 }
             }
-
-
-            for (int vertex = 0; vertex < n; vertex++) {
-                if (negativeCircle[vertex]) {
-                    System.out.println("YES");
-                    printCircle(vertex, parent);
-                    return true;
-                }
-            }
             return false;
-        }
-
-        private void printCircle(int start, int[] parent) {
-            LinkedList<Integer> path = new LinkedList<>();
-            int current = start;
-            do {
-                current = parent[current];
-                path.addFirst(current + 1);
-            } while (current != start);
-            System.out.println(path.size());
-            path.forEach(v -> System.out.print(v + " "));
         }
     }
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String[] temp = br.readLine().split(" ");
 
-        int n = Integer.parseInt(temp[0]);
+        int n = Integer.parseInt(br.readLine());
 
         Graph g = new Graph(n);
-
         for (int i = 0; i < n; i++) {
             g.addLine(i, br.readLine().split(" "));
         }
 
-        for (int i = 0; i < n; i++) {
-            if (g.BellmanFord(i)) {
-                return;
-            }
-        }
-        System.out.println("NO");
+        g.findNegativeCircle();
     }
 }
+
+//6
+//0 10 100 100000 100000 100000
+//100000 0 5 100000 100000 100000
+//100000 100000 0 100000 7 100000
+//100000 100000 -18 0 100000 100000
+//100000 100000 100000 10 0 100000
+//-1 100000 100000 100000 100000 0
