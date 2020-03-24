@@ -23,6 +23,6 @@
 hs_err_pid*
 
 # Project exclude folders
-/.idea/
-/build/
-/build/classes/java/main/
+*/.idea/
+*/build/
+*/build/classes/java/main/
