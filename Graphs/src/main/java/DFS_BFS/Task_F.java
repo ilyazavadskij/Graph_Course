@@ -3,12 +3,15 @@ package DFS_BFS;
 import java.io.*;
 import java.util.*;
 
-public class Task_F {
-    static class Graph {
+//Задача F. Сумма расстояний [1 sec, 256 mb]
 
+public class Task_F {
+
+    static class Graph {
         int n;
-        LinkedList<Integer>[] connections;
         int[][] distance;
+
+        LinkedList<Integer>[] connections;
 
         Graph(int n) {
             this.n = n;
@@ -79,6 +82,7 @@ public class Task_F {
 
         g.distanceSum();
     }
+
 }
 
 //5 5

@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-public class Task_C {
-    static class Graph {
+//Задача C. Поиск пути на гриде [1 sec, 256 mb]
 
+public class Task_C {
+
+    static class Graph {
         int w;
         int h;
         int n;
@@ -97,12 +99,11 @@ public class Task_C {
                 }
             }
         }
-
     }
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String temp[] = br.readLine().split(" ");
+        String[] temp = br.readLine().split(" ");
         int w = Integer.parseInt(temp[0]);
         int h = Integer.parseInt(temp[1]);
         int startX = Integer.parseInt(temp[2]) - 1;

@@ -5,71 +5,62 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
+//Задача D. TopSort. Топологическая сортировка [1 sec, 256 mb]
+
 public class Task_D {
 
     static class Graph {
-
         int n;
-        List<Set<Integer>> connections;
+        ArrayList<Integer>[] connections;
         LinkedList<Integer> sortQueue;
-
-        LinkedList<Integer> path;
-        boolean isCircled;
 
         Graph(int n) {
             this.n = n;
-            this.connections = new ArrayList();
+            this.connections = new ArrayList[n];
             for (int i = 0; i < n; i++)
-                connections.add(new HashSet<>());
-            this.path = new LinkedList<>();
+                connections[i] = new ArrayList<>();
             this.sortQueue = new LinkedList<>();
-            this.isCircled = false;
         }
 
         void addEdge(int vertex, int neighbor) {
-            this.connections.get(vertex).add(neighbor);
+            this.connections[vertex].add(neighbor);
         }
 
-        void findCircle() {
+        boolean findCircle() {
             int[] color = new int[this.n];
-
+            boolean result = false;
             for (int v = 0; v < this.n; v++) {
-                if (!this.isCircled) {
-                    if (color[v] == 0) {
-                        findCircleDFS(v, color);
+                if (color[v] == 0) {
+                    result = findCircleDFS(v, color);
+                    if (result) {
+                        return result;
                     }
                 }
             }
+            return result;
         }
 
-        void findCircleDFS(int v, int[] color) {
-            if (this.isCircled) {
-                return;
-            }
-
-            path.add(v);
+        boolean findCircleDFS(int v, int[] color) {
             color[v] = 1;
 
-            if (this.connections.get(v) != null) {
-                for (int u : this.connections.get(v)) {
+            if (this.connections[v] != null) {
+                for (int u : this.connections[v]) {
                     if (color[u] == 0) {
-                        findCircleDFS(u, color);
-                    }
-                    if (color[u] == 1) {
-                        this.isCircled = true;
-                        return;
+                        if (findCircleDFS(u, color)) {
+                            return true;
+                        }
+                    } else if (color[u] == 1) {
+                        return true;
                     }
                 }
             }
 
-            path.removeLast();
             color[v] = 2;
+            return false;
         }
 
         void topologicalSort() {
-            findCircle();
-
-            if (this.isCircled) {
+            if (findCircle()) {
                 System.out.println("-1");
                 return;
             }
@@ -88,7 +79,7 @@ public class Task_D {
         void DFS(int v, boolean[] visited) {
             visited[v] = true;
 
-            for (int u : this.connections.get(v)) {
+            for (int u : this.connections[v]) {
                 if (!visited[u]) {
                     DFS(u, visited);
                 }
@@ -99,7 +90,7 @@ public class Task_D {
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String temp[] = br.readLine().split(" ");
+        String[] temp = br.readLine().split(" ");
         int n = Integer.parseInt(temp[0]);
         int m = Integer.parseInt(temp[1]);
 
@@ -118,6 +109,7 @@ public class Task_D {
 
         g.topologicalSort();
     }
+
 }
 
 //6 6

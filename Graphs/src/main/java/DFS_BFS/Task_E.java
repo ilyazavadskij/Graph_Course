@@ -4,24 +4,31 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
+
+//Задача E. Поиск цикла [1 sec, 256 mb]
 
 public class Task_E {
 
     static class Graph {
-
         int n;
-        ArrayList<Integer>[] connections;
+        int[] parent;
+        int circleStart;
 
         LinkedList<Integer> path;
-        boolean isCircled;
-        int circleStart;
+        ArrayList<Integer>[] connections;
 
         Graph(int n) {
             this.n = n;
             this.connections = new ArrayList[n];
+            for (int i = 0; i < n; i++)
+                connections[i] = new ArrayList<>();
+
+            this.parent = new int[n];
+            Arrays.fill(this.parent, -1);
+
             this.path = new LinkedList<>();
-            this.isCircled = false;
         }
 
         void addEdge(int vertex, int neighbor) {
@@ -35,59 +42,52 @@ public class Task_E {
         void findCircle() {
             int[] color = new int[this.n];
             circleStart = -1;
-
+            boolean result = false;
             for (int v = 0; v < this.n; v++) {
-                if (!this.isCircled) {
+                if (!result) {
                     if (color[v] == 0) {
-                        DFS(v, color);
+                        result = DFS(v, color);
+                        if (result) {
+                            break;
+                        }
                     }
                 }
             }
 
-            if (!this.isCircled) {
+            if (!result) {
                 System.out.println("NO");
             } else {
                 System.out.println("YES");
 //                System.out.println(" " + circleStart);
-                boolean start = false;
-                for (int v : path) {
-                    if (v == circleStart) {
-                        start = true;
-                    }
-//                    System.out.println(v + " " + start);
-                    if (start) {
-                        System.out.printf("%d ", v + 1);
-                    }
+                int current = this.parent[this.circleStart];
+                this.path.addFirst(current);
+                while (current != this.circleStart) {
+                    current = this.parent[current];
+                    this.path.addFirst(current);
                 }
+                path.forEach(v -> System.out.print(((v + 1) + " ")));
             }
         }
 
-        void DFS(int v, int[] color) {
-            if (this.isCircled) {
-                return;
-            }
-
-            path.add(v);
+        boolean DFS(int v, int[] color) {
             color[v] = 1;
 
             if (this.connections[v] != null) {
                 for (int u : this.connections[v]) {
+                    this.parent[u] = v;
                     if (color[u] == 0) {
-                        DFS(u, color);
-                    }
-
-                    if (color[u] == 1) {
-                        if (this.circleStart == -1) {
-                            this.circleStart = u;
+                        if (DFS(u, color)) {
+                            return true;
                         }
-                        this.isCircled = true;
-                        return;
+                    } else if (color[u] == 1) {
+                        this.circleStart = u;
+                        return true;
                     }
                 }
             }
 
-            path.removeLast();
             color[v] = 2;
+            return false;
         }
     }
 
@@ -114,4 +114,5 @@ public class Task_E {
 
         g.findCircle();
     }
+
 }
