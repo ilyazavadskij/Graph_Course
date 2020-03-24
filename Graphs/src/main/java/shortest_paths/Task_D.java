@@ -4,9 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class Task_D {
-    static class Graph {
+//Задача D. Диаметр графа [1 sec, 32 mb]
 
+public class Task_D {
+
+    static class Graph {
         int n;
         int[][] distance;
         final int MAX_VALUE;
@@ -78,8 +80,8 @@ public class Task_D {
                 System.out.println();
             }
         }
-
     }
+
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));

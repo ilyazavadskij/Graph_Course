@@ -4,11 +4,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class Task_A {
-    static class Graph {
+//Задача A. Флойд [2 sec, 256 mb]
 
+public class Task_A {
+
+    static class Graph {
         int n;
-        int distance[][];
+        int[][] distance;
 
         Graph(int n) {
             this.n = n;
@@ -21,7 +23,7 @@ public class Task_A {
             }
         }
 
-        void floydWarshall() {
+        void FloydWarshall() {
             for (int k = 0; k < n; k++) {
                 for (int i = 0; i < n; i++) {
                     for (int j = 0; j < n; j++) {
@@ -54,7 +56,7 @@ public class Task_A {
             g.addLine(i, br.readLine().split(" "));
         }
 
-        g.floydWarshall();
+        g.FloydWarshall();
     }
 
 }

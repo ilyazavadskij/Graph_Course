@@ -5,71 +5,85 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 
+//Задача E. Цикл отрицательного веса [2 sec, 256 mb]
+
 public class Task_E {
 
-    private static long MAX_VALUE = 100000;
-
     static class Graph {
+        final int MAX_VALUE = 100000;
 
-        LinkedList<Integer> path;
-        long[] distances;
-        long[][] adjacencyMatrix;
-        boolean[] visited;
         int n;
+        int start;
+        int[] parent;
+        int[][] adjacencyMatrix;
 
+        LinkedList<Integer> circle;
 
         Graph(int n) {
             this.n = n;
-            this.adjacencyMatrix = new long[n][n];
+            this.start = -1;
+
+            this.adjacencyMatrix = new int[n][n];
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
                     adjacencyMatrix[i][j] = MAX_VALUE;
                 }
             }
-            this.distances = new long[n];
-            this.visited = new boolean[n];
-            this.path = new LinkedList<>();
+
+            this.parent = new int[n];
+            for (int i = 0; i < n; i++) {
+                parent[i] = -1;
+            }
+
+            this.circle = new LinkedList<>();
         }
 
         void addLine(int i, String[] line) {
             for (int j = 0; j < this.n; j++) {
-                adjacencyMatrix[j][i] = Long.parseLong(line[j]);
+                adjacencyMatrix[i][j] = Integer.parseInt(line[j]);
             }
         }
 
         void findNegativeCircle() {
-            for (int j = 0; j < n; j++) {
-                visited[j] = false;
-            }
-
             for (int i = 0; i < n; i++) {
-                if (!visited[i]) {
-                    if (BellmanFord(i)) {
-                        System.out.println("YES");
-                        System.out.println(path.size());
-                        path.forEach(v -> System.out.print((v + 1) + " "));
-                    }
+                BellmanFord(i);
+                if (start != -1) {
+                    findCircle();
+                    System.out.println("YES");
+                    System.out.println(circle.size());
+                    circle.forEach(v -> System.out.print((v + 1) + " "));
                     return;
                 }
             }
             System.out.println("NO");
         }
 
-        boolean BellmanFord(int source) {
-            int[] parent = new int[n];
-            path.clear();
-
-            for (int node = 0; node < n; node++) {
-                distances[node] = MAX_VALUE;
+        void findCircle() {
+            int y = start;
+            for (int i = 0; i < n; i++) {
+                y = parent[y];
             }
 
-            distances[source] = 0;
+            int current = y;
+            do {
+                circle.addFirst(current);
+                current = parent[current];
+            } while (current != y);
+        }
+
+        void BellmanFord(int source) {
+            int[] distance = new int[n];
+            for (int node = 0; node < n; node++) {
+                distance[node] = MAX_VALUE;
+            }
+            distance[source] = 0;
+
             for (int node = 0; node < n - 1; node++) {
                 for (int sourceNode = 0; sourceNode < n; sourceNode++) {
                     for (int destinationNode = 0; destinationNode < n; destinationNode++) {
                         if (adjacencyMatrix[sourceNode][destinationNode] != MAX_VALUE) {
-                            if (distances[destinationNode] > distances[sourceNode] + adjacencyMatrix[sourceNode][destinationNode]) {
-                                distances[destinationNode] = distances[sourceNode] + adjacencyMatrix[sourceNode][destinationNode];
+                            if (distance[destinationNode] > distance[sourceNode] + adjacencyMatrix[sourceNode][destinationNode]) {
+                                distance[destinationNode] = distance[sourceNode] + adjacencyMatrix[sourceNode][destinationNode];
                                 parent[destinationNode] = sourceNode;
                             }
                         }
@@ -77,27 +91,20 @@ public class Task_E {
                 }
             }
 
-//            boolean[] negativeCircle = new boolean[n];
             for (int sourceNode = 0; sourceNode < n; sourceNode++) {
                 for (int destinationNode = 0; destinationNode < n; destinationNode++) {
                     if (adjacencyMatrix[sourceNode][destinationNode] != MAX_VALUE) {
-                        if (distances[destinationNode] > distances[sourceNode] + adjacencyMatrix[sourceNode][destinationNode]) {
+                        if (distance[destinationNode] > distance[sourceNode] + adjacencyMatrix[sourceNode][destinationNode]) {
+                            start = destinationNode;
                             parent[destinationNode] = sourceNode;
-                            int current = destinationNode;
-                            do {
-//                                negativeCircle[current] = true;
-                                current = parent[current];
-                                path.addFirst(current);
-                            } while (current != destinationNode && current != -1);
-
-                            return current != -1;
+                            return;
                         }
                     }
                 }
             }
-            return false;
         }
     }
+
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -106,11 +113,12 @@ public class Task_E {
 
         Graph g = new Graph(n);
         for (int i = 0; i < n; i++) {
-            g.addLine(i, br.readLine().split(" "));
+            g.addLine(i, br.readLine().replace("  ", " ").split(" "));
         }
 
         g.findNegativeCircle();
     }
+
 }
 
 //6
@@ -120,3 +128,15 @@ public class Task_E {
 //100000 100000 -18 0 100000 100000
 //100000 100000 100000 10 0 100000
 //-1 100000 100000 100000 100000 0
+
+//4
+//100000 100000 100000 -1
+//100000 100000 100000 100000
+//100000 100000 100000 100000
+//100000 -1 -1 100000
+
+//4
+//100000 1000 100000 -1000
+//100000 100000 -2 1000
+//100000 1 100000 100000
+//100000 100000 100000 100000

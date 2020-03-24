@@ -9,6 +9,8 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
+//Задача B. Расстояние между вершинами [2 sec, 256 mb]
+
 public class Task_B {
 
     static class Edge {
@@ -16,7 +18,7 @@ public class Task_B {
         int destination;
         int weight;
 
-        public Edge(int source, int destination, int weight) {
+        Edge(int source, int destination, int weight) {
             this.source = source;
             this.destination = destination;
             this.weight = weight;
@@ -24,11 +26,11 @@ public class Task_B {
     }
 
     static class Graph {
+        final int MAX_WEIGHT;
+
         int n;
         LinkedList<Edge>[] adjacencyList;
         int[] distance;
-
-        final int MAX_WEIGHT;
 
         Graph(int n) {
             this.n = n;
@@ -100,7 +102,6 @@ public class Task_B {
         }
     }
 
-
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -124,6 +125,7 @@ public class Task_B {
 
         g.findMinDistance(s, t);
     }
+
 }
 
 
