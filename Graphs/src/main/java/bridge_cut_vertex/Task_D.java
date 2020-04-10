@@ -3,78 +3,91 @@ package bridge_cut_vertex;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.Comparator;
+import java.util.LinkedList;
 
 public class Task_D {
 
+    static class Edge {
+        int u;
+        int v;
+        int weight;
+
+        Edge(int u, int v, int dist) {
+            this.u = u;
+            this.v = v;
+            this.weight = dist;
+        }
+
+        int getWeight() {
+            return weight;
+        }
+
+        public String toString() {
+            return "({" + u + "-" + v + "}=" + weight + ")";
+        }
+    }
+
     static class Graph {
         int n;
-        final int MAX_VALUE;
-
-        boolean[] visited;
-        int[][] connections;
-        int[] minEdge;
-        int[] selEdge;
+        int[] mas;
+        int[] size;
+        LinkedList<Edge> connections;
 
         Graph(int n) {
             this.n = n;
-            this.MAX_VALUE = n * 100000;
-
-            this.visited = new boolean[n];
-            this.minEdge = new int[n];
-            this.selEdge = new int[n];
-
-            this.connections = new int[n][n];
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    this.connections[i][j] = MAX_VALUE;
-                }
-            }
+            this.mas = new int[n];
+            this.size = new int[n];
+            this.connections = new LinkedList<>();
         }
 
         void addEdge(int vertex, int neighbor, int weight) {
-            this.connections[vertex][neighbor] = weight;
+            this.connections.addLast(new Edge(vertex, neighbor, weight));
         }
 
-        void minSpanningTree() {
+        void Kruskal() {
             for (int i = 0; i < n; i++) {
-                visited[i] = false;
-                minEdge[i] = MAX_VALUE;
-                selEdge[i] = -1;
+                mas[i] = i;
+                size[i] = 1;
             }
-            Prim();
-            System.out.println(Arrays.stream(minEdge).sum());
-        }
 
-        void Prim() {
-            minEdge[0] = 0;
+            connections.sort(Comparator.comparing(Edge::getWeight));
 
-            for (int i = 0; i < n; i++) {
-                int v = -1;
-                for (int j = 0; j < n; j++) {
-                    if (!visited[j] && (v == -1 || minEdge[j] < minEdge[v])) {
-                        v = j;
-                    }
-                }
-                visited[v] = true;
-
-                for (int to = 0; to < n; to++) {
-                    if (connections[v][to] < minEdge[to]) {
-                        minEdge[to] = connections[v][to];
-                        selEdge[to] = v;
-                    }
+            int count = 0;
+            for (Edge edge : connections) {
+                if (union(edge.u, edge.v)) {
+                    count += edge.weight;
                 }
             }
+            System.out.println(count);
         }
 
-        void print() {
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    System.out.print(connections[i][j] + " ");
-                }
-                System.out.println();
+        int root(int n) {
+            if (n == mas[n]) {
+                return n;
             }
+            return mas[n] = root(mas[n]);
         }
+
+
+        boolean union(int x, int y) {
+            x = root(x);
+            y = root(y);
+            if (x == y) {
+                return false;
+            }
+
+            if (size[x] < size[y]) {
+                int k = x;
+                x = y;
+                y = k;
+            }
+
+            mas[y] = x;
+            size[x] += size[y];
+            return true;
+        }
+
     }
 
     public static void main(String[] args) throws IOException {
@@ -94,7 +107,7 @@ public class Task_D {
             g.addEdge(d, s, w);
         }
 
-        g.minSpanningTree();
+        g.Kruskal();
     }
 
 }

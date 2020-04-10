@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Task_B {
 
@@ -16,7 +18,7 @@ public class Task_B {
         int[] outTimer;
 
         ArrayList<Integer>[] connections;
-        ArrayList<Integer> cutVertices;
+        Set<Integer> cutVertices;
 
         Graph(int n) {
             this.n = n;
@@ -24,7 +26,7 @@ public class Task_B {
             this.inTimer = new int[n];
             this.outTimer = new int[n];
 
-            this.cutVertices = new ArrayList<>();
+            this.cutVertices = new HashSet<>();
             this.connections = new ArrayList[n];
             for (int i = 0; i < n; i++)
                 connections[i] = new ArrayList<>();
@@ -51,23 +53,22 @@ public class Task_B {
         }
 
         void DFS(int v, int p) {
-            timer++;
             visited[v] = true;
-            inTimer[v] = timer;
-            outTimer[v] = timer;
+            inTimer[v] = outTimer[v] = timer++;
 
             int children = 0;
 
-            for (Integer d : this.connections[v]) {
-                if (d == p) {
+            for (Integer to : this.connections[v]) {
+                if (to == p) {
                     continue;
                 }
-                if (visited[d]) {
-                    outTimer[v] = Math.min(outTimer[v], inTimer[d]);
+
+                if (visited[to]) {
+                    outTimer[v] = Math.min(outTimer[v], inTimer[to]);
                 } else {
-                    DFS(d, v);
-                    outTimer[v] = Math.min(outTimer[v], outTimer[d]);
-                    if (outTimer[d] >= inTimer[v] && p != -1) {
+                    DFS(to, v);
+                    outTimer[v] = Math.min(outTimer[v], outTimer[to]);
+                    if (outTimer[to] >= inTimer[v] && p != -1) {
                         cutVertices.add(v);
                     }
                     children++;
