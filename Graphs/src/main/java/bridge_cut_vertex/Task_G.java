@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+//Задача G. Разрезание графа [2 sec, 256 mb]
+
 public class Task_G {
 
     static class Graph {

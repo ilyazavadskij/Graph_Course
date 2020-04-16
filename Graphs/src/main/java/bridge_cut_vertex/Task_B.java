@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+//Задача B. Points. Точки сочленения [2 sec, 256 mb]
+
 public class Task_B {
 
     static class Graph {
@@ -83,7 +85,6 @@ public class Task_B {
             System.out.println(cutVertices.size());
             cutVertices.stream().sorted().forEach(v -> System.out.println(v + 1));
         }
-
     }
 
     public static void main(String[] args) throws IOException {

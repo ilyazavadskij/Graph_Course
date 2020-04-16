@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
+//Задача C. Condense 2. Конденсация графа [2 sec, 256 mb]
+
 public class Task_C {
 
     static class Graph {
@@ -64,7 +66,6 @@ public class Task_C {
                 if (!visitedReversed[v]) {
                     secondDFS(v, c);
                     c++;
-//                    System.out.println(v + ": " + Arrays.toString(color));
                 }
             }
 
@@ -77,7 +78,6 @@ public class Task_C {
                     }
                 }
             }
-//            System.out.println(s);
             System.out.println(s.size());
         }
 
@@ -100,7 +100,6 @@ public class Task_C {
                 }
             }
         }
-
     }
 
     public static void main(String[] args) throws IOException {

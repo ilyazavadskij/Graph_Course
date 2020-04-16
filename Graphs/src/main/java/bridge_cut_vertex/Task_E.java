@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
+//Задача E. Раскраска в три цвета [2 sec, 256 mb]
+
 public class Task_E {
 
     static class Graph {

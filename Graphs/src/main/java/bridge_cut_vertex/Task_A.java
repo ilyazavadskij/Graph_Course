@@ -90,7 +90,6 @@ public class Task_A {
             System.out.println(bridges.size());
             bridges.stream().sorted().forEach(System.out::println);
         }
-
     }
 
     public static void main(String[] args) throws IOException {

@@ -4,19 +4,20 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+//Задача F. Unionday. День Объединения [2 sec, 256 mb]
+
 public class Task_F {
 
     static class Graph {
-
         final int MAX_VALUE;
         int n;
+
         int[][] coordinates;
         double[][] connections;
-        double[] minEdge;
-        boolean[] visited;
-        int[] selEdge;
 
-        int[] parent;
+        boolean[] visited;
+        double[] minEdge;
+        int[] selEdge;
 
         Graph(int n) {
             this.n = n;

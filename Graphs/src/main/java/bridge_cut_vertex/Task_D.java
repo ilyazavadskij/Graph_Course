@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.util.Comparator;
 import java.util.LinkedList;
 
+//Задача D. Остовное дерево 2 [2 sec, 256 mb]
+
 public class Task_D {
 
     static class Edge {
@@ -76,7 +78,6 @@ public class Task_D {
             if (x == y) {
                 return false;
             }
-
             if (size[x] < size[y]) {
                 int k = x;
                 x = y;
@@ -87,7 +88,6 @@ public class Task_D {
             size[x] += size[y];
             return true;
         }
-
     }
 
     public static void main(String[] args) throws IOException {
