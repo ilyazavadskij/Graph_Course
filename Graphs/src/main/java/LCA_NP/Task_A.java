@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+//Задача A. 2-раскраска [1 sec, 256 mb]
 
 public class Task_A {
 

@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+//Задача C. Общий предок [2 sec, 256 mb]
 
 public class Task_C {
 
